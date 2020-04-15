@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="javascript,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="使用传统NFAJS和大部分语言一样使用传统的NFA作为正则引擎。检测方法如下。1&quot;nfa not&quot;.match(/nfa|nfa not/) // [&apos;nfa&apos;] 引擎的构造正则的引擎是由一些零部件组合而成的。在上一篇里我把它们笼统地放在一起讲，下面逐类分析一些。">
+<meta name="keywords" content="javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS中的正则（引擎）">
+<meta property="og:url" content="http://rizzleci.github.io/2016/11/20/egrepinJS2/index.html">
+<meta property="og:site_name" content="cxy的个人博客">
+<meta property="og:description" content="使用传统NFAJS和大部分语言一样使用传统的NFA作为正则引擎。检测方法如下。1&quot;nfa not&quot;.match(/nfa|nfa not/) // [&apos;nfa&apos;] 引擎的构造正则的引擎是由一些零部件组合而成的。在上一篇里我把它们笼统地放在一起讲，下面逐类分析一些。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-14T11:22:13.255Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JS中的正则（引擎）">
+<meta name="twitter:description" content="使用传统NFAJS和大部分语言一样使用传统的NFA作为正则引擎。检测方法如下。1&quot;nfa not&quot;.match(/nfa|nfa not/) // [&apos;nfa&apos;] 引擎的构造正则的引擎是由一些零部件组合而成的。在上一篇里我把它们笼统地放在一起讲，下面逐类分析一些。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://rizzleci.github.io/2016/11/20/egrepinJS2/">
+
+
+
+
+
+  <title>JS中的正则（引擎） | cxy的个人博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">cxy的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://rizzleci.github.io/2016/11/20/egrepinJS2/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="cxy的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JS中的正则（引擎）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-20T19:46:46+08:00">
+                2016-11-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="使用传统NFA"><a href="#使用传统NFA" class="headerlink" title="使用传统NFA"></a>使用传统NFA</h2><p>JS和大部分语言一样使用传统的NFA作为正则引擎。检测方法如下。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"nfa not"</span>.match(<span class="regexp">/nfa|nfa not/</span>) <span class="comment">// ['nfa']</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="引擎的构造"><a href="#引擎的构造" class="headerlink" title="引擎的构造"></a>引擎的构造</h2><p>正则的引擎是由一些零部件组合而成的。在上一篇里我把它们笼统地放在一起讲，下面逐类分析一些。<br><a id="more"></a></p>
+<h3 id="文字字符"><a href="#文字字符" class="headerlink" title="文字字符"></a>文字字符</h3><p>普通的文字字符在正则里可以被直接解析，比如 /cxy/ 可以匹配出字符串里连续的’cxy’。</p>
+<h3 id="量词"><a href="#量词" class="headerlink" title="量词"></a>量词</h3><p>量词提供计数功能：<code>*</code>/+/?/{n}/{min,max}</p>
+<h3 id="字符组"><a href="#字符组" class="headerlink" title="字符组"></a>字符组</h3><p>字符组是指[…]，无论它有多长，都是匹配一个字符。</p>
+<h3 id="锚点"><a href="#锚点" class="headerlink" title="锚点"></a>锚点</h3><p>^,$这样表示开始或结束的属于锚点，(?=…)这样的环视也算作锚点。它们只匹配字符串的位置。</p>
+<h3 id="捕获括号"><a href="#捕获括号" class="headerlink" title="捕获括号"></a>捕获括号</h3><p>捕获括号及引用是NFA的特色。</p>
+<h2 id="两个规则"><a href="#两个规则" class="headerlink" title="两个规则"></a>两个规则</h2><h3 id="优先选择最左的匹配结果"><a href="#优先选择最左的匹配结果" class="headerlink" title="优先选择最左的匹配结果"></a>优先选择最左的匹配结果</h3><p>如果引擎不能在字符串开始找到匹配结果，传动装置推动引擎，从下一个位置开始尝试。</p>
+<h3 id="标准量词匹配优先"><a href="#标准量词匹配优先" class="headerlink" title="标准量词匹配优先"></a>标准量词匹配优先</h3><p>标准量词（?、<code>*</code>、+、{min,mix}）总是匹配尽可能多的字符，直到匹配上限。<br>下面re中 \d+ 可以匹配到全部的字符，但是为了让正则中的 0 得到匹配，\d+ “交出”了一个“0”，匹配到的是”1200”。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> re = <span class="regexp">/^(\d+)(0)$/</span></span><br><span class="line">re.exec(<span class="string">"12000"</span>)  <span class="comment">// ["12000", "1200", "0"]</span></span><br></pre></td></tr></table></figure></p>
+<p>今天同学恰好给我看了另外一个类似的例子。下面的代码中 0<em> <strong>不必须</strong> 得到匹配，\d+ 并没有交出字符，匹配了“12000”，而 0</em> 没有匹配任何字符。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> re = <span class="regexp">/^(\d+)(0*)$/</span></span><br><span class="line">re.exec(<span class="string">"12000"</span>)  <span class="comment">// ["12000", "12000", ""]</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="NFA的特色"><a href="#NFA的特色" class="headerlink" title="NFA的特色"></a>NFA的特色</h2><h3 id="表达式主导"><a href="#表达式主导" class="headerlink" title="表达式主导"></a>表达式主导</h3><p>NFA被称为表达式主导的引擎。<br>引擎从正则表达式的第一个字符开始，每次检查一部分，同时检查当前文本是否匹配表达式的当前部分，如果是则继续表达式的下一部分，如果不是则推动引擎重复尝试。如此继续直到表达式的所有部分都能匹配。<br>表达式中的控制权在不同元素之间转换，因此称为表达式主导。</p>
+<p>也说一下相对的DFA引擎。DFA在扫描字符串时会记录当前有效的所有匹配可，逐渐淘汰掉不匹配的可能<br>在用 /nfa|nfa not/ 匹配”nfa not”时，NFA引擎会从正则表达式第一个字符开始对字符串进行匹配，匹配到nfa结束时匹配结束，不再考虑另外的可能。而DFA引擎会从字符串的第一个字符开始对所有的选项开始匹配，检索到空格时淘汰掉第一个可能选项。<br>理论上讲，DFA引擎相对会快一些。NFA在尝试不同选项时可能浪费更多的时间。这也提示我们在使用正则表达式时避免使用选项繁多的正则表达式。</p>
+<h3 id="回溯和匹配优先"><a href="#回溯和匹配优先" class="headerlink" title="回溯和匹配优先"></a>回溯和匹配优先</h3><p>在遇到量词和多选结构的情况下，NFA会依次处理各个子表达式或组成元素，遇到需要可能在两个可能成功的选项时它会选择其一，同时记住选择的位置，以备后续需要。这个记住的位置在术语中称为 <strong>备用状态</strong> ，它包含两个位置，一个是正则表达式中的位置，另一个是在字符串中的位置。如果余下的部分也成功了，匹配完成。如果余下的部分匹配失败，引擎会回溯到备用状态继续尝试。<br>当匹配失败回溯时会返回到距离当前最近储存的备用状态。原则是先进后出（LIFO）,也就是说最先储存的备用状态会在最后尝试匹配。</p>
+<p>JS支持忽略优先量词 <code>??</code> <code>*?</code> <code>+?</code> <code>{min,max}?</code> 他们会让引擎选择跳过尝试，匹配尽量少的字符。如果在“进行尝试”和“跳过尝试”之间选择，对于匹配优先的量词，引擎会选择“进行尝试”，对于忽略优先的量词，引擎会“跳过尝试”。</p>
+<p>比如想要提取一个html标签中内容的时候：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> re = <span class="regexp">/&lt;div&gt;.*?&lt;\/div&gt;/</span></span><br><span class="line"><span class="keyword">var</span> str = <span class="string">"&lt;div&gt;ccc&lt;/div&gt;&lt;div&gt;xxxyyy&lt;/div&gt;"</span></span><br><span class="line">str.match(re) <span class="comment">// ["&lt;d  iv&gt;ccc&lt;/div&gt;"]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果不使用忽略优先量词</span></span><br><span class="line"><span class="keyword">var</span> re2 = <span class="regexp">/&lt;div&gt;.*&lt;\/div&gt;/</span></span><br><span class="line">str.match(re2) <span class="comment">// ["&lt;div&gt;ccc&lt;/div&gt;&lt;div&gt;xxxyyy&lt;/div&gt;"]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 但是这种正则对标签嵌套无能为力,此时我们可以使用环视。</span></span><br><span class="line"><span class="keyword">var</span> str2 = <span class="string">"&lt;div&gt;&lt;div&gt;ccc&lt;/div&gt;&lt;div&gt;xxxyyy&lt;/div&gt;&lt;/div&gt;"</span></span><br><span class="line">str2.match(re) <span class="comment">// ["&lt;div&gt;&lt;div&gt;ccc&lt;/div&gt;"]</span></span><br><span class="line"><span class="keyword">var</span> re3 = <span class="regexp">/&lt;div&gt;(?!&lt;\/?div).*?&lt;\/div&gt;/</span></span><br><span class="line">str2.match(re3) <span class="comment">// ["&lt;div&gt;ccc&lt;/div&gt;"]</span></span><br></pre></td></tr></table></figure></p>
+<p>在一些语音所应用的正则引擎中支持固化分组<code>(?&gt;...)</code>。当匹配完固化分组中的内容后会丢弃掉分组中保存的备用状态。<br>在环视结构中，只要环视结构的匹配尝试结束，引擎就会丢掉环视结构中的备选状态。由于JS中不支持固化分组，可以使用环视来模拟。由于环视只匹配一个位置，我们用捕获括号+引用来匹配字符。也就是说<code>(?&gt;...)</code>相当于<code>(?=(...))\1</code>。<br>下面用一个处理数字。需求：如果小数第三位为0，则保留两位，如果第三位不为0，则保留三位小数。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> re0 = <span class="regexp">/(\.\d\d[1-9]?)\d+/</span></span><br><span class="line"><span class="keyword">var</span> str0 = <span class="string">"0.330000001"</span></span><br><span class="line"><span class="keyword">var</span> str1 = <span class="string">"0.625"</span></span><br><span class="line"></span><br><span class="line">str0.replace(re0, <span class="string">'$1'</span>) <span class="comment">// 0.33</span></span><br><span class="line">str1.replace(re0, <span class="string">'$1'</span>) <span class="comment">// 0.62</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> re1 = <span class="regexp">/(\.\d\d(?=([1-9]?))\2)\d+/</span></span><br><span class="line">str0.replace(re1, <span class="string">'$1'</span>) <span class="comment">// 0.33</span></span><br><span class="line">str1.replace(re1, <span class="string">'$1'</span>) <span class="comment">// 0.625</span></span><br><span class="line"><span class="comment">// re1匹配str0的时候，引擎匹配到环视结构，[1-9]?没有匹配任何内容，\d+匹配后面的所有数字。</span></span><br><span class="line"><span class="comment">// re1匹配str1的时候，[1-9]?匹配到了'5'，\d+匹配失败，但是环视结构已经丢弃了备选状态，整个正则匹配失败。</span></span><br></pre></td></tr></table></figure></p>
+<p>在传统NFA引擎中，多选结构既不是匹配优先也不是忽略优先，而是按顺序排列的。对于一个多选结构，引擎会逐个对选项进行匹配，匹配成功一个选项的时候则匹配成功。在DFA和POSIX NFA引擎中有匹配优先的多选，总是匹配所有分支中能匹配最多文本的。这就是最开始进行引擎检测的原理。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/31/class-inJS/" rel="next" title="JS中的类">
+                <i class="fa fa-chevron-left"></i> JS中的类
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/21/rn-in-win10-badstart/" rel="prev" title="react-native在win10上搭建安卓开发环境踩到的坑">
+                react-native在win10上搭建安卓开发环境踩到的坑 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="cxy">
+          <p class="site-author-name" itemprop="name">cxy</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用传统NFA"><span class="nav-number">1.</span> <span class="nav-text">使用传统NFA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引擎的构造"><span class="nav-number">2.</span> <span class="nav-text">引擎的构造</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文字字符"><span class="nav-number">2.1.</span> <span class="nav-text">文字字符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#量词"><span class="nav-number">2.2.</span> <span class="nav-text">量词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符组"><span class="nav-number">2.3.</span> <span class="nav-text">字符组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#锚点"><span class="nav-number">2.4.</span> <span class="nav-text">锚点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#捕获括号"><span class="nav-number">2.5.</span> <span class="nav-text">捕获括号</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#两个规则"><span class="nav-number">3.</span> <span class="nav-text">两个规则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优先选择最左的匹配结果"><span class="nav-number">3.1.</span> <span class="nav-text">优先选择最左的匹配结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标准量词匹配优先"><span class="nav-number">3.2.</span> <span class="nav-text">标准量词匹配优先</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NFA的特色"><span class="nav-number">4.</span> <span class="nav-text">NFA的特色</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#表达式主导"><span class="nav-number">4.1.</span> <span class="nav-text">表达式主导</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#回溯和匹配优先"><span class="nav-number">4.2.</span> <span class="nav-text">回溯和匹配优先</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cxy</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

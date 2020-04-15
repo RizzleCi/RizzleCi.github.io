@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="算法,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="这个有点像高中的数学笔记，莫名兴奋了起来(⊙ ▽ ⊙) 渐近记号Θ定义：对于给定函数g(n)，Θ(g(n))={f(n):存在正常量c1、c2和n0，使对于所有n&amp;gt;n0有0≤c1g(n)≤f(n)≤c2g(n)}  若存在正常量c1、c2使得对于足够大的n，f(n)能夹入c1g(n)、c2g(n)之间，则f(n)属于集合Θ(g(n))。 对于所有n≥n0，函数f(n)在一个常量因子内等于g(">
+<meta name="keywords" content="算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法理论笔记">
+<meta property="og:url" content="http://rizzleci.github.io/2016/07/28/Algorithms/index.html">
+<meta property="og:site_name" content="cxy的个人博客">
+<meta property="og:description" content="这个有点像高中的数学笔记，莫名兴奋了起来(⊙ ▽ ⊙) 渐近记号Θ定义：对于给定函数g(n)，Θ(g(n))={f(n):存在正常量c1、c2和n0，使对于所有n&amp;gt;n0有0≤c1g(n)≤f(n)≤c2g(n)}  若存在正常量c1、c2使得对于足够大的n，f(n)能夹入c1g(n)、c2g(n)之间，则f(n)属于集合Θ(g(n))。 对于所有n≥n0，函数f(n)在一个常量因子内等于g(">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-14T11:22:13.254Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="算法理论笔记">
+<meta name="twitter:description" content="这个有点像高中的数学笔记，莫名兴奋了起来(⊙ ▽ ⊙) 渐近记号Θ定义：对于给定函数g(n)，Θ(g(n))={f(n):存在正常量c1、c2和n0，使对于所有n&amp;gt;n0有0≤c1g(n)≤f(n)≤c2g(n)}  若存在正常量c1、c2使得对于足够大的n，f(n)能夹入c1g(n)、c2g(n)之间，则f(n)属于集合Θ(g(n))。 对于所有n≥n0，函数f(n)在一个常量因子内等于g(">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://rizzleci.github.io/2016/07/28/Algorithms/">
+
+
+
+
+
+  <title>算法理论笔记 | cxy的个人博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">cxy的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://rizzleci.github.io/2016/07/28/Algorithms/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="cxy的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">算法理论笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-28T19:46:46+08:00">
+                2016-07-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这个有点像高中的数学笔记，莫名兴奋了起来(⊙ ▽ ⊙)</p>
+<h2 id="渐近记号"><a href="#渐近记号" class="headerlink" title="渐近记号"></a>渐近记号</h2><h3 id="Θ"><a href="#Θ" class="headerlink" title="Θ"></a>Θ</h3><p>定义：对于给定函数g(n)，Θ(g(n))={f(n):存在正常量c1、c2和n0，使对于所有n&gt;n0有0≤c1g(n)≤f(n)≤c2g(n)}</p>
+<ul>
+<li>若存在正常量c1、c2使得对于足够大的n，f(n)能夹入c1g(n)、c2g(n)之间，则f(n)属于集合Θ(g(n))。</li>
+<li>对于所有n≥n0，函数f(n)在一个常量因子内等于g(n)，称g(n)是f(n)的渐近紧确界。</li>
+<li>每个成员f(n)均渐近非负，n足够大时，f(n)非负。</li>
+<li>用记号Θ(1)来表示一个常量<a id="more"></a>
+性质：</li>
+<li>传递性。f(n)=Θ(g(n))且g(n)=Θ(h(n)),有f(n)=Θ(h(n))。</li>
+<li>自反性。f(n)=Θ(f(n))。</li>
+<li>对称性。f(n)=Θ(g(n))当且仅当g(n)=Θ(f(n))。<h3 id="Ο"><a href="#Ο" class="headerlink" title="Ο"></a>Ο</h3>渐近上界<br>定义：对于给定函数g(n)，Ο(g(n))={f(n):存在正常量c和n0，使对于所有n≥n0有0≤f(n)≤cg(n)}</li>
+<li>Θ(g(n))是Ο(g(n))的子集<br>性质：</li>
+<li>传递性。f(n)=Ο(g(n))且g(n)=Ο(h(n)),有f(n)=Ο(h(n))。</li>
+<li>自反性。f(n)=Ο(f(n))</li>
+<li>转置对称性。f(n)=Ο(g(n))当且仅当g(n)=Ω(f(n))。<h3 id="Ω"><a href="#Ω" class="headerlink" title="Ω"></a>Ω</h3>渐近下界<br>定义：对于给定函数g(n)，Ω(g(n))={f(n):存在正常量c和n0，使对于所有n≥n0有0≤cg(n)≤f(n)}</li>
+<li>Θ(g(n))是Ω(g(n))的子集</li>
+<li>对于任意两个函数f(n)和g(n)，当且仅当f(n)=Ο(g(n))和f(n)=Ω(g(n))时，有f(n)=Θ(g(n))<br>性质：</li>
+<li>传递性。f(n)=Ω(g(n))且g(n)=Ω(h(n)),有f(n)=Ω(h(n))。</li>
+<li>自反性。f(n)=Ω(f(n))<h3 id="o"><a href="#o" class="headerlink" title="o"></a>o</h3>定义：对于给定函数g(n)，o(g(n))={f(n):对任意正常量c&gt;0，存在常量n0&gt;0，使对于所有n≥n0有0≤f(n)&lt;cg(n)}</li>
+<li>非渐近紧确的上界。</li>
+<li>与O区别：Ο(g(n))中，0≤f(n)≤cg(n)对某个c成立，o(g(n))中，0≤f(n)&lt;cg(n)对所有c成立。</li>
+<li>f(n)=o(g(n))，n→∞时，f(n)与g(n)的比值趋近于0<br>性质：</li>
+<li>传递性。f(n)=o(g(n))且g(n)=o(h(n)),有f(n)=o(h(n))。</li>
+<li>转置对称性。f(n)=o(g(n))当且仅当g(n)=ω(f(n))。<h3 id="ω"><a href="#ω" class="headerlink" title="ω"></a>ω</h3>定义：对于给定函数g(n)，ω(g(n))={f(n):对任意正常量c&gt;0，存在常量n0&gt;0，使对于所有n≥n0有0≤cg(n)&lt;f(n)}</li>
+<li>非渐近紧确的下界。</li>
+<li>f(n)=ω(g(n))，n→∞时，f(n)与g(n)的比值趋近于∞<br>性质：</li>
+<li>传递性。f(n)=ω(g(n))且g(n)=ω(h(n)),有f(n)=ω(h(n))。</li>
+</ul>
+<h2 id="分治策略"><a href="#分治策略" class="headerlink" title="分治策略"></a>分治策略</h2><p>每个递归层中进行分解=&gt;解决=&gt;合并。当子问题需要递归求解时称为递归情况，子问题不需要递归时，称递归“触底”，进入基本情况。<br>递归式的求解方法：</p>
+<ul>
+<li>代入法。猜想-证明。</li>
+<li>递归树发。转换为树，节点表示不同层次递归调用产生的代价。然后采用边界和来求解。</li>
+<li>主方法。<br>主定理：令a&gt;=1，b&gt;1是常数，f(n)是一个函数，T(n)是定义在非负整数上的递归式：T(n) = a<code>*</code>T(b/n) + f(n),则T(n)有如下渐进界：<br>1.若对于某个常数ε&gt;0，有f(n)=O(n^logb(a-ε)),则T(n)=Θ(nlogb(a))<br>2.若f(n)=Θ(nlogb(a))，则T(n)=Θ(nlogb(a)<code>*</code>lgn)<br>3.若对于某个常数ε&gt;0，有f(n)=Ω(n^logb(a+ε))，且对某个常数d<code>&lt;</code>1和收益足够大的n有af(n/b)≤cf(n),则T(n)=Θ(f(n))<br>以前想找个图片形式的方便看，结果链接一直挂，在我找到合适的图片库之前还是自行搜索吧。。。<br>f(n)与n^logb(a)比较，若f(n)小，如情况1；若f(n)大，如情况3；若两者相等，如情况2。第一种情况的小是渐近小于，要相差一个因子n^ε，ε<code>&gt;</code>0；第三种情况中同样的要相差一个因子n^ε，同时还要满足af(n/b)≤cf(n)。</li>
+</ul>
+<h2 id="概率分析"><a href="#概率分析" class="headerlink" title="概率分析"></a>概率分析</h2><p>在问题中应用概率的理念分析算法的运行时间，可以得出平均情况运行时间。<br>当一个算法的行为不仅由输入决定，也由随机数生成器产生的数值决定，则这个算法是随机的。随机算法的运行时间称为期望运行时间。<br>给定一个样本空间S和S中一个事件A，设XA=I{A}，则E[XA]=P{A}.<br>（一个事件A对应的指示器随机变量的期望值等于A的概率。）</p>
+<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆可以看成一个近似的完全二叉树，除了最底层外，树是完全充满的，而且从左向右填充。<br>最大堆：节点的值小于或等于其父节点。最大元素在根节点。<br>最小堆：节点的值大于或等于其父节点。最小元素在根节点。</p>
+<p>&lt;待续…&gt;</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/26/memory-inJS/" rel="next" title="JS中的内存问题">
+                <i class="fa fa-chevron-left"></i> JS中的内存问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/31/web-storages/" rel="prev" title="web数据储存">
+                web数据储存 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="cxy">
+          <p class="site-author-name" itemprop="name">cxy</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#渐近记号"><span class="nav-number">1.</span> <span class="nav-text">渐近记号</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Θ"><span class="nav-number">1.1.</span> <span class="nav-text">Θ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ο"><span class="nav-number">1.2.</span> <span class="nav-text">Ο</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ω"><span class="nav-number">1.3.</span> <span class="nav-text">Ω</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#o"><span class="nav-number">1.4.</span> <span class="nav-text">o</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ω"><span class="nav-number">1.5.</span> <span class="nav-text">ω</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分治策略"><span class="nav-number">2.</span> <span class="nav-text">分治策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概率分析"><span class="nav-number">3.</span> <span class="nav-text">概率分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#堆"><span class="nav-number">4.</span> <span class="nav-text">堆</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cxy</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

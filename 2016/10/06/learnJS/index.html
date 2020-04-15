@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="javascript,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="给工作室新人的JS学习参考。这里只提了JS的学习，前端需要了解的东西很多，比如计算机网络、数据结构、算法、工具使用，有一些方向可能还需要了解计算机图形学的一些知识。这里就不提那么多了。 入门JS有几种入门方法，根据个人喜好选择，也可以都看看。 1.慕课网入门教程 http://www.imooc.com/learn/36边看知识边在一遍写代码，快速掌握一些基本知识。不细致不全面，只是一个入门而已。">
+<meta name="keywords" content="javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于JS学习">
+<meta property="og:url" content="http://rizzleci.github.io/2016/10/06/learnJS/index.html">
+<meta property="og:site_name" content="cxy的个人博客">
+<meta property="og:description" content="给工作室新人的JS学习参考。这里只提了JS的学习，前端需要了解的东西很多，比如计算机网络、数据结构、算法、工具使用，有一些方向可能还需要了解计算机图形学的一些知识。这里就不提那么多了。 入门JS有几种入门方法，根据个人喜好选择，也可以都看看。 1.慕课网入门教程 http://www.imooc.com/learn/36边看知识边在一遍写代码，快速掌握一些基本知识。不细致不全面，只是一个入门而已。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-14T11:22:13.256Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于JS学习">
+<meta name="twitter:description" content="给工作室新人的JS学习参考。这里只提了JS的学习，前端需要了解的东西很多，比如计算机网络、数据结构、算法、工具使用，有一些方向可能还需要了解计算机图形学的一些知识。这里就不提那么多了。 入门JS有几种入门方法，根据个人喜好选择，也可以都看看。 1.慕课网入门教程 http://www.imooc.com/learn/36边看知识边在一遍写代码，快速掌握一些基本知识。不细致不全面，只是一个入门而已。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://rizzleci.github.io/2016/10/06/learnJS/">
+
+
+
+
+
+  <title>关于JS学习 | cxy的个人博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">cxy的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://rizzleci.github.io/2016/10/06/learnJS/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="cxy的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于JS学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-06T19:46:46+08:00">
+                2016-10-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>给工作室新人的JS学习参考。这里只提了JS的学习，前端需要了解的东西很多，比如计算机网络、数据结构、算法、工具使用，有一些方向可能还需要了解计算机图形学的一些知识。这里就不提那么多了。</p>
+<h2 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h2><p>JS有几种入门方法，根据个人喜好选择，也可以都看看。</p>
+<p>1.慕课网入门教程 <a href="http://www.imooc.com/learn/36" target="_blank" rel="noopener">http://www.imooc.com/learn/36</a><br>边看知识边在一遍写代码，快速掌握一些基本知识。<br>不细致不全面，只是一个入门而已。<br><a id="more"></a><br>2.视频教程<br>智能社<br><a href="http://zhinengshe.com/video.html" target="_blank" rel="noopener">http://zhinengshe.com/video.html</a><br>妙味课堂的我也有<br>讲的算比较全了，也比较细致，看下来之后能做一些东西了。<br>讲的很慢，看下来真的需要耐心，说了很多废话，也比较容易走神。<br>3.入门文档<br>MDN <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/JavaScript</a><br>比较新，比较全。但是翻译有点差。结合英文看是一种很好的选择。<br>W3shool <a href="http://www.w3school.com.cn/js/index.asp" target="_blank" rel="noopener">http://www.w3school.com.cn/js/index.asp</a><br>挺全的，很多人奉为经典，这个中文站很久没更新了，内容可能过时。<br>4.书籍<br>入门的话我是看的《JS DOM编程艺术》，之前也有很多人推荐使用这本书作为入门，算是经典。讲解也比较有意思，看完能做一些东西。但是现在看来有些过时。<br>《JS高级程序设计》可以大致过一遍作为入门。但是它的讲解比文档还要无趣，入门知识和进阶知识混在一起，上来就看可能有些地方不懂。其实不太适合入门。<br>《headfirst》 htmlcss的入门我是看的这个系列，JS的也可以一看。特点是画风比较幼齿，没什么难理解的东西。<br>《JS语言精粹》《JS启示录》这两本我是一起看的，内容比较基础比较易懂，有了点基础之后就可以看了。</p>
+<p>基本的知识懂的同时要有代码量的积累。书、文档上的代码最好跟着敲一下。根据自己的情况敲一下IFE的练习任务<a href="http://ife.baidu.com/task/all" target="_blank" rel="noopener">http://ife.baidu.com/task/all</a> 。自行阅读任务说明，第二部分及以后那些都可以做一下。后面的任务可能比外包项目和学校的项目挑战性更大。</p>
+<p>如果能封装一些简单的组件，如弹出层、轮播，对付一般的网页没太大问题了，但是总觉得自己的代码有哪里不对，这个时候就算过了入门阶段了。</p>
+<h2 id="进阶"><a href="#进阶" class="headerlink" title="进阶"></a>进阶</h2><p>其实入了门以后该做什么自己也应该清楚了，在这里也写一下进阶阶段可以的事情，可以当参考，也算写给自己的。<br>下面列这些东西没有严格的顺序，看心情来。</p>
+<p>1.书籍<br>这一阶段可以看的书很多，在图书馆随手拿一本5年以内出版的JS书都可以一看。评价比较好的有下面几本。<br>《你不知道的JS》系列 强推，中文版不够看可以看英文版。<br>《JS高级程序设计》《JS权威指南》这种书适合反复去看，每一次都有新收获的感觉。<br>《编写可维护的JS》关于代码规范、团队合作，门槛不高。<br>《JS设计模式与开发实践》 可以配合那本headfirst的设计模式（这个是JAVA描述，看概念嘛）一起看。我自己也有一篇边看边写的笔记<a href="http://rizzleci.github.io/2016/08/15/note-design-patterns-inJS/">http://rizzleci.github.io/2016/08/15/note-design-patterns-inJS/</a><br>《JS函数式编程》大致翻过，挺多东西常用，但是不一定知道为什么这样用。<br>《JS经典实例》我刚翻开，感觉不错哦。<br>《JS框架设计》很多人推荐，我还没看过。<br>《JSON必知必会》翻开你就知道了，信仰。(膜)</p>
+<p>2.学点框架、类库、工具什么的。目前比较流行React全家桶，Vue这些，以后也许会有更好的东西。</p>
+<p>3.源码。读源码可以从underscore.js开始，都说这个简单。其他的随便找喽。写代码过程中用的一些小工具库也可以去看看他是怎么实现的。</p>
+<p>4.文档博文。这个比较看缘分，列几个我觉得不错的，如果有好的也可以推荐给我。<br>mdn文档，查东西必备。<br>奇舞周刊、javascript weekly，这两个是邮件订阅的，有时候推的文章不错。<br><a href="http://luopq.com/" target="_blank" rel="noopener">http://luopq.com/</a> 偶然搜到的一个博客，还不错。<br><a href="https://segmentfault.com/" target="_blank" rel="noopener">https://segmentfault.com/</a> SF社区，不少高质量文章和回答。<br><a href="http://www.cnblogs.com/tomxu/archive/2011/12/15/2288411.html" target="_blank" rel="noopener">http://www.cnblogs.com/tomxu/archive/2011/12/15/2288411.html</a> 汤姆大叔的深入理解JS系列，还不错，缺点是内容稍老。<br><a href="https://github.com/xieranmaya/blog/issues" target="_blank" rel="noopener">https://github.com/xieranmaya/blog/issues</a> 实习的同事的博客。<br><a href="https://github.com/icepy/Front-End-Develop-Guide" target="_blank" rel="noopener">https://github.com/icepy/Front-End-Develop-Guide</a> 一个收集了各种资源的仓库。<br><a href="https://www.talkingcoder.com/" target="_blank" rel="noopener">https://www.talkingcoder.com/</a> 一个分享文章和最佳实践的社区。</p>
+<p><a href="https://github.com/LeuisKen/leuisken.github.io/issues" target="_blank" rel="noopener">https://github.com/LeuisKen/leuisken.github.io/issues</a> 收藏啊，膜啊。</p>
+<p>5.nodejs。这个也算必会的了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/04/egrepinJS/" rel="next" title="JS中的正则">
+                <i class="fa fa-chevron-left"></i> JS中的正则
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/31/class-inJS/" rel="prev" title="JS中的类">
+                JS中的类 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="cxy">
+          <p class="site-author-name" itemprop="name">cxy</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#入门"><span class="nav-number">1.</span> <span class="nav-text">入门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进阶"><span class="nav-number">2.</span> <span class="nav-text">进阶</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cxy</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

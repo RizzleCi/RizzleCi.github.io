@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="javascript,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="JavaScript设计模式与开发实践 + JavaScript设计模式（动物的）+ headfirst设计模式 的笔记 单例模式 singleton 保证一个类仅有一个实例，并且提供一个访问它的全局属性。从单例模式的特点出发，在js中的全局变量就可以作为单例来使用。使用太多全局变量不是很好，于是可以采用命名空间、闭包封装私有变量的方式来优化这个使用。  惰性单例 在需要的时候创建对象的单例如下函">
+<meta name="keywords" content="javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="笔记-JS中的设计模式">
+<meta property="og:url" content="http://rizzleci.github.io/2016/08/15/note-design-patterns-inJS/index.html">
+<meta property="og:site_name" content="cxy的个人博客">
+<meta property="og:description" content="JavaScript设计模式与开发实践 + JavaScript设计模式（动物的）+ headfirst设计模式 的笔记 单例模式 singleton 保证一个类仅有一个实例，并且提供一个访问它的全局属性。从单例模式的特点出发，在js中的全局变量就可以作为单例来使用。使用太多全局变量不是很好，于是可以采用命名空间、闭包封装私有变量的方式来优化这个使用。  惰性单例 在需要的时候创建对象的单例如下函">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-14T11:22:13.257Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="笔记-JS中的设计模式">
+<meta name="twitter:description" content="JavaScript设计模式与开发实践 + JavaScript设计模式（动物的）+ headfirst设计模式 的笔记 单例模式 singleton 保证一个类仅有一个实例，并且提供一个访问它的全局属性。从单例模式的特点出发，在js中的全局变量就可以作为单例来使用。使用太多全局变量不是很好，于是可以采用命名空间、闭包封装私有变量的方式来优化这个使用。  惰性单例 在需要的时候创建对象的单例如下函">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://rizzleci.github.io/2016/08/15/note-design-patterns-inJS/">
+
+
+
+
+
+  <title>笔记-JS中的设计模式 | cxy的个人博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">cxy的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://rizzleci.github.io/2016/08/15/note-design-patterns-inJS/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="cxy的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">笔记-JS中的设计模式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-15T11:03:35+08:00">
+                2016-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>JavaScript设计模式与开发实践 + JavaScript设计模式（动物的）+ headfirst设计模式 的笔记</p>
+<h2 id="单例模式-singleton"><a href="#单例模式-singleton" class="headerlink" title="单例模式 singleton"></a>单例模式 singleton</h2><ul>
+<li>保证一个类仅有一个实例，并且提供一个访问它的全局属性。<br>从单例模式的特点出发，在js中的全局变量就可以作为单例来使用。使用太多全局变量不是很好，于是可以采用命名空间、闭包封装私有变量的方式来优化这个使用。</li>
+</ul>
+<h3 id="惰性单例"><a href="#惰性单例" class="headerlink" title="惰性单例"></a>惰性单例</h3><ul>
+<li>在需要的时候创建对象的单例<br>如下函数返回一个可以创建唯一实例的函数：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> getSingle = <span class="function"><span class="keyword">function</span> (<span class="params">fn</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> result</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> result || (result = fn.apply(<span class="keyword">this</span>,<span class="built_in">arguments</span>))</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<a id="more"></a>
+<h2 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h2><p>定义一系列算法，把它们一个个封装起来，并且使它们可以互相替换。<br>将算法的使用和实现分开。<br>一个简单的例子。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> strategis = &#123;</span><br><span class="line">	s : <span class="function"><span class="keyword">function</span> (<span class="params">s</span>) </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> s * <span class="number">4</span></span><br><span class="line">	&#125;,</span><br><span class="line">	a : <span class="function"><span class="keyword">function</span> (<span class="params">s</span>) </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> s * <span class="number">3</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> calculate = <span class="function"><span class="keyword">function</span> (<span class="params">l,s</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> strategis[l](s)</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(calculate(<span class="string">'s'</span>,<span class="number">200</span>))</span><br></pre></td></tr></table></figure></p>
+<h2 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h2><p>为对象提供一个代用品或占位符，以便控制对它的访问。<br>保护代理可以拒绝一部分请求，用于控制不同权限的对象对目标对象的访问；虚拟代理延迟创建开销大的对象；<br>虚拟代理的例子：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myImage = (<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> imgNode = <span class="built_in">document</span>.createElement(<span class="string">'img'</span>)</span><br><span class="line">	<span class="built_in">document</span>.body.appendChild(imgNode)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">src</span>) </span>&#123;</span><br><span class="line">		imgNode.src = src</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)()</span><br><span class="line"><span class="keyword">var</span> proxyImage = (<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> img = <span class="keyword">new</span> Image</span><br><span class="line">	img.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">		myImage(<span class="keyword">this</span>.src)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">src</span>) </span>&#123;</span><br><span class="line">		myImage(<span class="string">'loading.gif'</span>)</span><br><span class="line">		img.src = src</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure></p>
+<p>缓存代理可以为一些开销大的运算结果提供暂时储存，下次运行时返回储存的结果。<br>例子：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> mult = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> a = <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="built_in">arguments</span>.length; i++) &#123;</span><br><span class="line">		a = a * <span class="built_in">arguments</span>[i]</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> a</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> proxyMult = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> cache = &#123;&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">var</span> args = <span class="built_in">Array</span>.prototype.join.call(<span class="built_in">arguments</span>,<span class="string">','</span>)</span><br><span class="line">		<span class="keyword">if</span> (args <span class="keyword">in</span> cache) &#123;</span><br><span class="line">			<span class="keyword">return</span> cache[args]</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> cache[args] = mult.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure></p>
+<h2 id="迭代器模式"><a href="#迭代器模式" class="headerlink" title="迭代器模式"></a>迭代器模式</h2><p>迭代器模式指提供一种方法顺序访问一个聚合对象中的各个元素，不暴露对象的内部表示。<br>JS中有很多内置的迭代器，比如Array.prototype.forEach、Array.prototype.map等。</p>
+<h2 id="发布-订阅模式"><a href="#发布-订阅模式" class="headerlink" title="发布-订阅模式"></a>发布-订阅模式</h2><p>它定义对象间一对多的依赖关系，当一个对象状态改变时，所有依赖于它的对象都将得到通知。<br>实际上，我们平时编写的事件监听就可以说是一种发布-订阅模式。可以把DOM元素看成一个订阅者，把事件的触发看成发布。拿这种模式写起代码来，也总有一种这是事件的熟悉感。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> event = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> clientList = &#123;&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> listen = <span class="function"><span class="keyword">function</span>(<span class="params">key, fn</span>) </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (!clientList[key]) &#123;</span><br><span class="line">			clientList[key] = []</span><br><span class="line">		&#125;</span><br><span class="line">		clientList[key].push( fn )</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> trigger = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">var</span> key = <span class="built_in">Array</span>.prototype.shift.call(<span class="built_in">arguments</span>)</span><br><span class="line">		<span class="keyword">var</span> fns = clientList[key]</span><br><span class="line">		<span class="keyword">if</span> (fns.length === <span class="number">0</span> &amp;&amp; !fns) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; fns.length; i++) &#123;</span><br><span class="line">			fns[i].apply(<span class="keyword">this</span>,<span class="built_in">arguments</span>)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> remove = <span class="function"><span class="keyword">function</span>(<span class="params">key, fn</span>) </span>&#123;</span><br><span class="line">		<span class="keyword">var</span> fns = clientList[key]</span><br><span class="line">		<span class="keyword">if</span> (fns.length === <span class="number">0</span> &amp;&amp; !fns) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (!fn) &#123;</span><br><span class="line">			fns = []</span><br><span class="line">		&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; fns.length; i++) &#123;</span><br><span class="line">				<span class="keyword">if</span> (fns[i] == fn) &#123;</span><br><span class="line">					fns.splice(i,<span class="number">1</span>)</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		listen:listen,</span><br><span class="line">		trigger:trigger,</span><br><span class="line">		remove:remove</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)()</span><br><span class="line"></span><br><span class="line">event.listen(<span class="string">'my'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(num)</span><br><span class="line">&#125;)</span><br><span class="line">event.trigger(<span class="string">'my'</span>,<span class="number">7</span>)</span><br></pre></td></tr></table></figure>
+<p>一些书和文章中把观察者模式和发布-订阅模式算作一个，而另一本书中单独讲了这两种模式，在实现上有微小差别。个人感觉思路不变还是算成一种的比较好吧。</p>
+<h2 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h2><p>在一些对象向另一些对象发送请求时，通过命令模式可以将请求的发送者和接收者分离开来，或者说消除它们的耦合关系。<br>在JS当中，使用回调函数可以说是命令模式的体现。我们完全可以把发送的请求函数作为参数传递，比如下面这样的代码。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> receiver1 = &#123;</span><br><span class="line">	log: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="number">1</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> setCommand = <span class="function"><span class="keyword">function</span>(<span class="params">button, func</span>) </span>&#123;</span><br><span class="line">	button.onclick = func.bind(<span class="keyword">this</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> LogCommand = <span class="function"><span class="keyword">function</span>(<span class="params">receiver</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		receiver.log()</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> logCommad = <span class="keyword">new</span> LogCommand(receiver1)</span><br><span class="line">setCommand(button1, logCommad) <span class="comment">//假设有个叫button1的按钮</span></span><br></pre></td></tr></table></figure></p>
+<p>上面只是实现了能让一个命令的执行的命令模式。除此以外，命令模式需要可以进行撤销、重做、一次执行多个命令的功能。这样的话我们让command对象返回出execude方法（执行）、unexecude方法（撤销），添加一个堆栈来保存执行过的命令，使用一个大的对象（宏）来保存需要执行的命令。下面贴出一些例子。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> receiver1 = &#123;</span><br><span class="line">	log: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">'on'</span>)</span><br><span class="line">	&#125;,</span><br><span class="line">	unlog: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">'off'</span>) <span class="comment">//假装有撤销的代码</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> setCommand = <span class="function"><span class="keyword">function</span>(<span class="params">button, cmd</span>) </span>&#123;</span><br><span class="line">	button.onclick = cmd.execude</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> offCommand = <span class="function"><span class="keyword">function</span>(<span class="params">button, cmd</span>) </span>&#123;</span><br><span class="line">	button.onclick = cmd.unexecude</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> LogCommand = <span class="function"><span class="keyword">function</span>(<span class="params">receiver</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		execude: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">			receiver.log()</span><br><span class="line">		&#125;,</span><br><span class="line">		unexecude: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">			receiver.unlog()</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> logCommad = <span class="keyword">new</span> LogCommand(receiver1)</span><br><span class="line">setCommand(button1, logCommad) <span class="comment">//假设有个叫button1的按钮</span></span><br><span class="line">offCommand(button2, logCommad) <span class="comment">//假设有个叫button2的按钮</span></span><br></pre></td></tr></table></figure>
+<p>一次执行多个命令:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> BigCommand = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		commands: [],</span><br><span class="line">		add: <span class="function"><span class="keyword">function</span>(<span class="params">command</span>) </span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.commands.push(command)</span><br><span class="line">		&#125;,</span><br><span class="line">		execute: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>;i &lt; commands.length; i++)&#123;</span><br><span class="line">				commands[i].execute()</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="组合模式"><a href="#组合模式" class="headerlink" title="组合模式"></a>组合模式</h2><p>组合模式将对象组合生成树形结构，以表示“部分-整体”的层次结构。除了用来表示树形结构外，组合模式可以通过对象的多态性表现，使用户对单个对象和组合对象的使用具有一致性。用户请求从树的顶端对象向下传递，到达相应节点后进行相应的处理，这样，用户只需要关心顶层对象，像是上面的宏，叶对象只要都拥有叫做execute方法就可以了。<br>组合模式的组合对象和叶对象是聚合关系（HAS-A），不是父子关系。组合对象和叶对象需要有相同的接口和操作的一致性。<br>例子这里就不写了，知道组合对象很像上面那个宏就好了。</p>
+<h2 id="模板方法模式"><a href="#模板方法模式" class="headerlink" title="模板方法模式"></a>模板方法模式</h2><p>模板方法模式基于继承，它包括两部分，一部分是抽象父类，一部分是具体实现的子类。在父类中封装了子类的算法框架，包括实现一些公共方法以及封装子类中所有方法的执行顺序。在JAVA语言中，父类是抽象类（abstract），不可生成实例，有一些抽象方法必须由子类去定义。父类中封装子类方法是如何去执行的方法叫做模板方法。<br>由于js中并没有抽象类，没有办法保证子类会重写父类中的抽象方法，需要进行检查保证该方法是由子类创建的。<br>在父类要变化的地方加上钩子（hook），钩子的返回结果决定了模板方法的步骤，这样程序就不再只适用于一种状况。<br>好莱坞原则：允许底层组件将自己挂钩到高层组件，高层组件会决定什么时候、以何种方式使用底层组件。发布-订阅模式和模板方法木事都是这个原则的体现。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Beverage = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">Beverage.prototype.boil = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'烧水'</span>)</span><br><span class="line">&#125;</span><br><span class="line">Beverage.prototype.brew = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'子类要重写brew'</span>)</span><br><span class="line">&#125;</span><br><span class="line">Beverage.prototype.add = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'子类要重写add'</span>)</span><br><span class="line">&#125;</span><br><span class="line">Beverage.prototype.needAdd = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="comment">//这是个钩子</span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br><span class="line">Beverage.prototype.init = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">this</span>.boil()</span><br><span class="line">	<span class="keyword">this</span>.brew()</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">this</span>.needAdd()) &#123;</span><br><span class="line">		<span class="keyword">this</span>.add()</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Coffee = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">Coffee.prototype = <span class="keyword">new</span> Beverage()</span><br><span class="line">Coffee.prototype.brew = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'冲咖啡'</span>)</span><br><span class="line">&#125;</span><br><span class="line">Coffee.prototype.add = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'加糖'</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Tea = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">Tea.prototype = <span class="keyword">new</span> Beverage()</span><br><span class="line">Tea.prototype.brew = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'泡茶'</span>)</span><br><span class="line">&#125;</span><br><span class="line">Tea.prototype.add = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'加柠檬'</span>)</span><br><span class="line">&#125;</span><br><span class="line">Tea.prototype.needAdd = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> coffee = <span class="keyword">new</span> Coffee()</span><br><span class="line">coffee.init()</span><br><span class="line"><span class="keyword">var</span> tea = <span class="keyword">new</span> Tea()</span><br><span class="line">tea.init()</span><br></pre></td></tr></table></figure>
+<p>其实我感觉后面那种不用继承来，而用闭包和参数传递实现的模板方法模式更js。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Beverage = <span class="function"><span class="keyword">function</span>(<span class="params">param</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> boil = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">'烧水'</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">var</span> brew = param.brew || <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'子类要重写brew'</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">var</span> add = param.add || <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'子类要重写add'</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">var</span> needAdd = param.needAdd || <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="comment">//这是个钩子</span></span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> F = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;&#125;</span><br><span class="line">	F.prototype.init = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		boil()</span><br><span class="line">		brew()</span><br><span class="line">		<span class="keyword">if</span> (needAdd()) &#123;</span><br><span class="line">			add()</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> F</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Coffee = Beverage(&#123;</span><br><span class="line">	brew : <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'冲咖啡'</span>)</span><br><span class="line">	&#125;,</span><br><span class="line">	add : <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">'加糖'</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Tea = Beverage(&#123;</span><br><span class="line">	brew : <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">'泡茶'</span>)</span><br><span class="line">	&#125;,</span><br><span class="line">	add : <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">'加柠檬'</span>)</span><br><span class="line">	&#125;,</span><br><span class="line">	needAdd : <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> coffee = <span class="keyword">new</span> Coffee()</span><br><span class="line">coffee.init()</span><br><span class="line"><span class="keyword">var</span> tea = <span class="keyword">new</span> Tea()</span><br><span class="line">tea.init()</span><br></pre></td></tr></table></figure>
+<h2 id="享元模式"><a href="#享元模式" class="headerlink" title="享元模式"></a>享元模式</h2><p>享元模式是用共享技术来有效支持大细粒度的对象。用来优化要创建大量类似对象的情况。<br>享元模式将对象的属性划分为内部状态和外部状态。内部状态储存在对象内部，独立于具体场景，通常不会变化，可以被一切对象共享；外部状态取决于具体场景，不能被共享。把相同的内部状态指定为一个共享对象，外部状态在必要时传入组成完整的对象。组装外部状态的过程会花费一定的时间，享元模式是用时间来换取空间的模式。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Upload = <span class="function"><span class="keyword">function</span>(<span class="params">type</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">this</span>.type = type <span class="comment">//一个内部状态</span></span><br><span class="line">&#125;</span><br><span class="line">Upload.prototype.delFile = <span class="function"><span class="keyword">function</span>(<span class="params">id</span>) </span>&#123;</span><br><span class="line">	uploadManager.setExternalState(id, <span class="keyword">this</span>)</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">this</span>.fileSize &lt; <span class="number">2000</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.dom.parentNode.removeChild(<span class="keyword">this</span>.dom)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">window</span>.confirm(<span class="string">'delete?'</span>+<span class="keyword">this</span>,fileName)) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.dom.parentNode.removeChild(<span class="keyword">this</span>.dom)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 实例化的工厂</span></span><br><span class="line"><span class="keyword">var</span> uploadFactory = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> createFlyWeightObjs = &#123;&#125;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		create: <span class="function"><span class="keyword">function</span>(<span class="params">type</span>) </span>&#123;</span><br><span class="line">			<span class="keyword">if</span> (createFlyWeightObjs[type]) &#123;</span><br><span class="line">				<span class="keyword">return</span> createFlyWeightObjs[type]</span><br><span class="line">			&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> createFlyWeightObjs[type] = <span class="keyword">new</span> Upload(type)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)()</span><br><span class="line"><span class="comment">// 管理器封装外部状态</span></span><br><span class="line"><span class="keyword">var</span> uploadManager = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> uploadDatabase = &#123;&#125;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		add: <span class="function"><span class="keyword">function</span>(<span class="params">id, type, fileName, fileSize</span>) </span>&#123;</span><br><span class="line">			<span class="keyword">var</span> flyWeightObj = uploadFactory.create(type)</span><br><span class="line"></span><br><span class="line">			<span class="keyword">var</span> dom = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</span><br><span class="line">			dom.innerHTML = <span class="string">'name:'</span> + fileName + <span class="string">';size:'</span> + fileSize + <span class="string">'&lt;button class="delete"&gt;delete&lt;/button&gt;'</span></span><br><span class="line">			dom.querySelector(<span class="string">'.delete'</span>).onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">				flyWeightObj.delFile(id)</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="built_in">document</span>.body.appendChild(dom)</span><br><span class="line"></span><br><span class="line">			uploadDatabase[id] = &#123;</span><br><span class="line">				fileName: fileName,</span><br><span class="line">				fileSize: fileSize,</span><br><span class="line">				dom: dom</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> flyWeightObj</span><br><span class="line">		&#125;,</span><br><span class="line">		setExternalState: <span class="function"><span class="keyword">function</span>(<span class="params">id, flyWeightObj</span>) </span>&#123;</span><br><span class="line">			<span class="keyword">var</span> uploadData = uploadDatabase[id]</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">var</span> i <span class="keyword">in</span> uploadData) &#123;</span><br><span class="line">				flyWeightObj[i] = uploadData[i]</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)()</span><br><span class="line"><span class="keyword">var</span> id = <span class="number">0</span></span><br><span class="line"><span class="keyword">var</span> startUpload = <span class="function"><span class="keyword">function</span>(<span class="params">type, files</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; files.length; i++) &#123;</span><br><span class="line">		<span class="keyword">var</span> uploadObj = uploadManager.add(++id, type, files[i].fileName, files[i].fileSize)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">startUpload(<span class="string">'plugin'</span>, [</span><br><span class="line">	&#123;</span><br><span class="line">	fileName: <span class="string">'1'</span>,</span><br><span class="line">	fileSize: <span class="number">1000</span></span><br><span class="line">	&#125;,</span><br><span class="line">	&#123;</span><br><span class="line">	fileName: <span class="string">'2'</span>,</span><br><span class="line">	fileSize: <span class="number">1000</span></span><br><span class="line">	&#125;,</span><br><span class="line">	&#123;</span><br><span class="line">	fileName: <span class="string">'3'</span>,</span><br><span class="line">	fileSize: <span class="number">1000</span></span><br><span class="line">	&#125;</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+<h2 id="职责链模式"><a href="#职责链模式" class="headerlink" title="职责链模式"></a>职责链模式</h2><p>使多个对象都有机会处理请求，避免请求的发送者和接收者之间的耦合关系，将这些对象连成一条链，沿着链传递请求，指导有个对象处理它。<br>职责链的传递函数可以写成下面这样。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> after = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> self = <span class="keyword">this</span></span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">var</span> ret = self.apply(<span class="keyword">this</span>,<span class="built_in">arguments</span>)</span><br><span class="line">		<span class="keyword">if</span>(ret === <span class="string">"nextSuccessor"</span>)&#123;</span><br><span class="line">			<span class="keyword">return</span> fn.apply(<span class="keyword">this</span>,<span class="built_in">arguments</span>)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> ret</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="中介者模式"><a href="#中介者模式" class="headerlink" title="中介者模式"></a>中介者模式</h2><p>增加一个中介者对象后，所有的相关对象都通过中介者对象通信，而不是相互引用，实现了对象间的解耦。这也是一种一对多的关系。<br>感觉这个很像发布-订阅模式，中介者作为一个订阅者，其他对象是发布者。实际上这也是实现中介者模式的一种方式。<br>也可以让中介者提供接收消息的接口，其他对象通过接口发送消息，中介者将处理结果返回给对象来实现。<br>中介者模式体现了最少知识原则，也就是耦合对象要少。<br>中介者模式的不足之处在于中介者会随着逻辑的复杂越来越复杂，成为一个难以维护的对象。</p>
+<h2 id="装饰者模式"><a href="#装饰者模式" class="headerlink" title="装饰者模式"></a>装饰者模式</h2><p>装饰者模式是一种动态地给对象增加职责的模式。<br>对于JS来说，可以随时给对象添加新的方法。然而不能随意地修改函数，所以我们对函数使用装饰者，也就是给函数添加新的功能的函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Function</span>.prototype.before = <span class="function"><span class="keyword">function</span>(<span class="params"> beforefn </span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> _self = <span class="keyword">this</span></span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		beforefn.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>)</span><br><span class="line">		<span class="keyword">return</span> _self.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Function</span>.prototype.after = <span class="function"><span class="keyword">function</span>(<span class="params"> afterfn </span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> _self = <span class="keyword">this</span></span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">var</span> ret = _self.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>)</span><br><span class="line">		afterfn.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>)</span><br><span class="line">		<span class="keyword">return</span> ret</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="状态模式"><a href="#状态模式" class="headerlink" title="状态模式"></a>状态模式</h2><p>状态模式是区分事物的内部状态，事物的内部状态的改变往往会带来事物行为的改变。<br>状态模式把对象的状态封装成单独的类，与此状态有关的行为被封装在这个类的内部。<br>状态模式容易实现状态的转换和添加新的状态，去掉了对象中过多的条件分支。但是同时状态对象会变得很多，逻辑也不容易看出。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Light = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">this</span>.offState = delegata(<span class="keyword">this</span>, FSM.off)</span><br><span class="line">	<span class="keyword">this</span>.onState = delegata(<span class="keyword">this</span>, FSM.on)</span><br><span class="line">	<span class="keyword">this</span>.currState = <span class="keyword">this</span>.offState</span><br><span class="line">	<span class="keyword">this</span>.button = <span class="literal">null</span></span><br><span class="line">&#125;</span><br><span class="line">Light.prototype.init = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> button = <span class="built_in">document</span>.createElement(<span class="string">'button'</span>)</span><br><span class="line">	<span class="keyword">var</span> self = <span class="keyword">this</span></span><br><span class="line">	button.innerHTML = <span class="string">'开'</span></span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'关的'</span>)</span><br><span class="line">	<span class="keyword">this</span>.button = <span class="built_in">document</span>.body.appendChild(button)</span><br><span class="line">	<span class="keyword">this</span>.button.onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		self.currState.buttonPressed.call(self)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> delegata = <span class="function"><span class="keyword">function</span>(<span class="params">client, delegation</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		buttonPressed: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> delegation.buttonPressed.apply(client, <span class="built_in">arguments</span>)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 这是一个状态机</span></span><br><span class="line"><span class="keyword">var</span> FSM = &#123;</span><br><span class="line">	off: &#123;</span><br><span class="line">		buttonPressed: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">			<span class="built_in">console</span>.log(<span class="string">'关了'</span>)</span><br><span class="line">			<span class="keyword">this</span>.button.innerHTML = <span class="string">'开'</span></span><br><span class="line">			<span class="keyword">this</span>.currState = <span class="keyword">this</span>.onState</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	on: &#123;</span><br><span class="line">		buttonPressed: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">			<span class="built_in">console</span>.log(<span class="string">'开了'</span>)</span><br><span class="line">			<span class="keyword">this</span>.button.innerHTML = <span class="string">'关'</span></span><br><span class="line">			<span class="keyword">this</span>.currState = <span class="keyword">this</span>.offState</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> light = <span class="keyword">new</span> Light()</span><br><span class="line">light.init()</span><br></pre></td></tr></table></figure>
+<h2 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h2><p>适配器模式解决两个接口不兼容问题。<br>适配器相当于一个接口转换器，使用修改了的接口包装一下被适配的对象，使其适用于新的接口。嗯，很多时候就是改一下数据结构的事情。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/05/Web-Workers/" rel="next" title="Web Workers">
+                <i class="fa fa-chevron-left"></i> Web Workers
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/18/css-animation/" rel="prev" title="css animation">
+                css animation <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="cxy">
+          <p class="site-author-name" itemprop="name">cxy</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#单例模式-singleton"><span class="nav-number">1.</span> <span class="nav-text">单例模式 singleton</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#惰性单例"><span class="nav-number">1.1.</span> <span class="nav-text">惰性单例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#策略模式"><span class="nav-number">2.</span> <span class="nav-text">策略模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代理模式"><span class="nav-number">3.</span> <span class="nav-text">代理模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代器模式"><span class="nav-number">4.</span> <span class="nav-text">迭代器模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发布-订阅模式"><span class="nav-number">5.</span> <span class="nav-text">发布-订阅模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令模式"><span class="nav-number">6.</span> <span class="nav-text">命令模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组合模式"><span class="nav-number">7.</span> <span class="nav-text">组合模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模板方法模式"><span class="nav-number">8.</span> <span class="nav-text">模板方法模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#享元模式"><span class="nav-number">9.</span> <span class="nav-text">享元模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#职责链模式"><span class="nav-number">10.</span> <span class="nav-text">职责链模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中介者模式"><span class="nav-number">11.</span> <span class="nav-text">中介者模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#装饰者模式"><span class="nav-number">12.</span> <span class="nav-text">装饰者模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#状态模式"><span class="nav-number">13.</span> <span class="nav-text">状态模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#适配器模式"><span class="nav-number">14.</span> <span class="nav-text">适配器模式</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cxy</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

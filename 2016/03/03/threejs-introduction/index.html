@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="javascript,threejs,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="本文是一篇简单的webGL+threejs构建web三维视图的入门教程，你可以了解到利用threejs创建简单的三维图形，并且控制图形运动。若有不足，欢迎指出。本文使用的框架是three.jsgithub地址：https://github.com/mrdoob/three.js，官网：http://threejs.org/，文档：http://threejs.org/docs/， 本文中的示例已上">
+<meta name="keywords" content="javascript,threejs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="threejs入门">
+<meta property="og:url" content="http://rizzleci.github.io/2016/03/03/threejs-introduction/index.html">
+<meta property="og:site_name" content="cxy的个人博客">
+<meta property="og:description" content="本文是一篇简单的webGL+threejs构建web三维视图的入门教程，你可以了解到利用threejs创建简单的三维图形，并且控制图形运动。若有不足，欢迎指出。本文使用的框架是three.jsgithub地址：https://github.com/mrdoob/three.js，官网：http://threejs.org/，文档：http://threejs.org/docs/， 本文中的示例已上">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-14T11:22:13.258Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="threejs入门">
+<meta name="twitter:description" content="本文是一篇简单的webGL+threejs构建web三维视图的入门教程，你可以了解到利用threejs创建简单的三维图形，并且控制图形运动。若有不足，欢迎指出。本文使用的框架是three.jsgithub地址：https://github.com/mrdoob/three.js，官网：http://threejs.org/，文档：http://threejs.org/docs/， 本文中的示例已上">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://rizzleci.github.io/2016/03/03/threejs-introduction/">
+
+
+
+
+
+  <title>threejs入门 | cxy的个人博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">cxy的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://rizzleci.github.io/2016/03/03/threejs-introduction/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="cxy的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">threejs入门</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-03T19:39:36+08:00">
+                2016-03-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文是一篇简单的webGL+threejs构建web三维视图的入门教程，你可以了解到利用threejs创建简单的三维图形，并且控制图形运动。若有不足，欢迎指出。<br>本文使用的框架是three.js<br>github地址：<a href="https://github.com/mrdoob/three.js" target="_blank" rel="noopener">https://github.com/mrdoob/three.js</a>，<br>官网：<a href="http://threejs.org/" target="_blank" rel="noopener">http://threejs.org/</a>，<br>文档：<a href="http://threejs.org/docs/" target="_blank" rel="noopener">http://threejs.org/docs/</a>，</p>
+<p>本文中的示例已上传github，地址：<a href="https://github.com/RizzleCi/three.js-demo" target="_blank" rel="noopener">https://github.com/RizzleCi/three.js-demo</a></p>
+<h2 id="一、创建场景"><a href="#一、创建场景" class="headerlink" title="一、创建场景"></a>一、创建场景</h2><p>我们所见的视图由两个部分共同创建，scene和camera。<br>首先定义一个场景：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> scene = <span class="keyword">new</span> THREE.Scene();</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>然后定义一个相机：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> camera = <span class="keyword">new</span> THREE.PerspectiveCamera( <span class="number">90</span>, width/height, <span class="number">0.1</span>, <span class="number">1000</span> );</span><br></pre></td></tr></table></figure>
+<p>等等，定义相机需要视窗的长宽。现在我要让我的绘图显示在页面的一个区域（<div>)标签中。我们来选中这个元素，获取它的长宽。</div></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> container = <span class="built_in">document</span>.getElementById(<span class="string">'canvasdiv'</span>);</span><br><span class="line"><span class="keyword">var</span> width = canvasdiv.clientWidth;</span><br><span class="line"><span class="keyword">var</span> height = canvasdiv.clientHeight;</span><br></pre></td></tr></table></figure>
+<p>这样再加上前面的一行代码，我们就完成了对相机的定义。然后把相机位置设定在z轴上方便观察。<br>camera.position.set(0,0,10)</p>
+<p>现在我们需要一个渲染器把定义好的场景渲染出来。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> renderer = <span class="keyword">new</span> THREE.WebGLRenderer();</span><br></pre></td></tr></table></figure>
+<p>给这个渲染器合适的大小。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">renderer.setSize( width, height );</span><br></pre></td></tr></table></figure>
+<p>然后将其加入到dom中。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canvasdiv.appendChild( renderer.domElement );</span><br></pre></td></tr></table></figure>
+<p>（运行以后发现这其实就是一个canvas元素。其实我们也可以在html中创建canvas元素再将renderer绑定到它上面。<code>var renderer = new THREE.WebGLRenderer({ canvas: document.getElementById(&#39;mainCanvas&#39;) });</code>）<br>最后进行渲染。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">renderer.render(scene,camera);</span><br></pre></td></tr></table></figure>
+<p>这样，就建立了一个简单的3d场景。</p>
+<h2 id="二、绘制图形"><a href="#二、绘制图形" class="headerlink" title="二、绘制图形"></a>二、绘制图形</h2><p>我将threejs中的物体理解为模型+材料。以一个长方体为例。<br>创建模型：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> geometry = <span class="keyword">new</span> THREE.BoxGeometry( <span class="number">1</span>,<span class="number">2</span>,<span class="number">1</span> );</span><br></pre></td></tr></table></figure>
+<p>定义材料：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> material = <span class="keyword">new</span> THREE.MeshBasicMaterial( &#123; <span class="attr">color</span>: <span class="number">0x645d50</span> &#125; );</span><br></pre></td></tr></table></figure>
+<p>有了这两者，我们就可以构建一个长方体方块了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cube = <span class="keyword">new</span> THREE.Mesh( geometry, material );</span><br></pre></td></tr></table></figure>
+<p>我们将其添加到场景中显示。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scene.add( cube );</span><br></pre></td></tr></table></figure>
+<p>这样，一个三维的长方体就绘制完成了<br>关于其他形状的绘制，张雯莉的threejs入门指南中介绍的很详细，在此不多赘述。<br>这部分的完整代码如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#canvasdiv</span>&#123;</span></span><br><span class="line"><span class="undefined">	width: 600px;</span></span><br><span class="line"><span class="undefined">	height: 600px;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">	</span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"js/three.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"main-content"</span> <span class="attr">id</span>=<span class="string">"canvasdiv"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> &gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> container = <span class="built_in">document</span>.getElementById(<span class="string">'canvasdiv'</span>)</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> scene = <span class="keyword">new</span> THREE.Scene();</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> width = canvasdiv.clientWidth;</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> height = canvasdiv.clientHeight;</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> camera = <span class="keyword">new</span> THREE.PerspectiveCamera( <span class="number">90</span>, width/height, <span class="number">0.1</span>, <span class="number">1000</span> );</span></span><br><span class="line"><span class="undefined">camera.position.set(0,0,10);</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> renderer = <span class="keyword">new</span> THREE.WebGLRenderer();</span></span><br><span class="line"><span class="undefined">renderer.setSize( width, height );</span></span><br><span class="line"><span class="undefined">canvasdiv.appendChild( renderer.domElement );</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> geometry = <span class="keyword">new</span> THREE.BoxGeometry( <span class="number">2</span>,<span class="number">1</span>,<span class="number">1</span> );</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> material = <span class="keyword">new</span> THREE.MeshBasicMaterial( &#123; <span class="attr">color</span>: <span class="number">0x645d50</span> &#125; );</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> cube = <span class="keyword">new</span> THREE.Mesh( geometry, material );</span></span><br><span class="line"><span class="undefined">scene.add( cube );</span></span><br><span class="line"><span class="undefined">renderer.render(scene,camera);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>看上去它只是一个长方形而已，但是它确实是一个立体图形，你可以改变一下camera的位置来观察一下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">camera.position.set( 5,3,10 );</span><br></pre></td></tr></table></figure></p>
+<p>好了，这样看起来是一个立体的长方体了吧。</p>
+<h2 id="三、创建3d对象"><a href="#三、创建3d对象" class="headerlink" title="三、创建3d对象"></a>三、创建3d对象</h2><p>大多数时候，我们需要讲绘制的图形整合到一起进行控制。此时，我们便需要一个3d对象。</p>
+<h3 id="创建一个自己的对象"><a href="#创建一个自己的对象" class="headerlink" title="创建一个自己的对象"></a>创建一个自己的对象</h3><p>在上面绘制的那个长方体上面再放一个球。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var geometry = new THREE.SphereGeometry( 0.5,100,100 );</span><br><span class="line">var material = new THREE.MeshBasicMaterial( &#123; color: 0xb9c16c &#125; );</span><br><span class="line">var ball = new THREE.Mesh( geometry,material );</span><br><span class="line">ball.position.set( 0,0,1 );</span><br><span class="line">scene.add(ball);</span><br></pre></td></tr></table></figure></p>
+<p>另说一句，默认放置mesh的位置是( 0,0,0 )，和改变相机位置一样，我们可以用ball.position.set方法来改变图形或对象的位置。因此动画也利用这个方法来实现。<br>然后要把它们整合成一个对象。<br>首先我们创建一个对象。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myobj = <span class="keyword">new</span> THREE.Object3D();</span><br></pre></td></tr></table></figure>
+<p>然后把我们画的图形添加到对象里就ok啦。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">myobj.add( cube );</span><br><span class="line">myobj.add( ball );</span><br></pre></td></tr></table></figure>
+<p>这时候我们已经有了一个3d对象，它包含我们刚刚绘制的长方形和球。于是就没有必要像原来那样把图形一个一个地放置到场景里，只需要把刚刚创建的对象放置到场景里。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scene.add( myobj );</span><br></pre></td></tr></table></figure>
+<p>完整代码如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#canvasdiv</span>&#123;</span></span><br><span class="line"><span class="undefined">	width: 600px;</span></span><br><span class="line"><span class="undefined">	height: 600px;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">	</span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"js/three.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"main-content"</span> <span class="attr">id</span>=<span class="string">"canvasdiv"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> &gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> container = <span class="built_in">document</span>.getElementById(<span class="string">'canvasdiv'</span>)</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> scene = <span class="keyword">new</span> THREE.Scene();</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> width = canvasdiv.clientWidth;</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> height = canvasdiv.clientHeight;</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> camera = <span class="keyword">new</span> THREE.PerspectiveCamera( <span class="number">90</span>, width/height, <span class="number">0.1</span>, <span class="number">1000</span> );</span></span><br><span class="line"><span class="undefined">camera.position.set( 0,0,10 )</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> renderer = <span class="keyword">new</span> THREE.WebGLRenderer();</span></span><br><span class="line"><span class="undefined">renderer.setSize( width, height );</span></span><br><span class="line"><span class="undefined">canvasdiv.appendChild( renderer.domElement );</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> geometry = <span class="keyword">new</span> THREE.BoxGeometry( <span class="number">2</span>,<span class="number">1</span>,<span class="number">1</span> );</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> material = <span class="keyword">new</span> THREE.MeshBasicMaterial( &#123; <span class="attr">color</span>: <span class="number">0x645d50</span> &#125; );</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> cube = <span class="keyword">new</span> THREE.Mesh( geometry, material );</span></span><br><span class="line"><span class="javascript"><span class="comment">//scene.add( cube );</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> geometry = <span class="keyword">new</span> THREE.SphereGeometry( <span class="number">0.5</span>,<span class="number">100</span>,<span class="number">100</span> );</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> material = <span class="keyword">new</span> THREE.MeshBasicMaterial( &#123; <span class="attr">color</span>: <span class="number">0xb9c16c</span> &#125; );</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> ball = <span class="keyword">new</span> THREE.Mesh( geometry,material );</span></span><br><span class="line"><span class="undefined">ball.position.set( 0,0,1 );</span></span><br><span class="line"><span class="javascript"><span class="comment">//scene.add(ball);</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> myobj = <span class="keyword">new</span> THREE.Object3D();</span></span><br><span class="line"><span class="undefined">myobj.add( cube );</span></span><br><span class="line"><span class="undefined">myobj.add( ball );</span></span><br><span class="line"><span class="undefined">scene.add( myobj );</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">renderer.render(scene,camera);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="外部导入-obj文件"><a href="#外部导入-obj文件" class="headerlink" title="外部导入.obj文件"></a>外部导入.obj文件</h3><p>threejs支持从外部导入.obj文件，听说这种文件是用3DsMax绘制的，用PS也可以编辑。我们需要引入OBJMTLLoader.js，MTLLoader.js文件；也有一个OBJLoader.js，但利用这个库只能导入模型而不能导入绘制obj时添加的材质，个人感觉不是非常实用，就不做介绍了。这时候，我们需要把文件们放到一个服务器上，否则会出现跨域问题。<br>为了让图像更明显，我们添加一些光线。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scene.add( <span class="keyword">new</span> THREE.AmbientLight( <span class="number">0xffffff</span> ) );</span><br></pre></td></tr></table></figure>
+<p>这里，我们通过导入图片来设置这个对象的纹理。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> texture = <span class="keyword">new</span> THREE.Texture();</span><br><span class="line"><span class="keyword">var</span> loader = <span class="keyword">new</span> THREE.ImageLoader( );</span><br><span class="line">loader.load( <span class="string">'tank.jpg'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"> image </span>) </span>&#123;</span><br><span class="line">	texture.image = image;</span><br><span class="line">	texture.needsUpdate = <span class="literal">true</span>;</span><br><span class="line">&#125; );</span><br></pre></td></tr></table></figure>
+<p>开始导入我们的3D对象！</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> loader = <span class="keyword">new</span> THREE.OBJMTLLoader();  </span><br><span class="line">loader.load(<span class="string">'tank.obj'</span>,<span class="string">'tank.mtl'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">object</span>)</span>&#123;</span><br><span class="line">	tank = object;</span><br><span class="line"></span><br><span class="line">	object.traverse(<span class="function"><span class="keyword">function</span>(<span class="params">child</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (child <span class="keyword">instanceof</span> THREE.Mesh)&#123;</span><br><span class="line">        <span class="comment">//将贴图赋于材质</span></span><br><span class="line">            child.material.map = texture;</span><br><span class="line">            child.material.transparent = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    object.position.set(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">    scene.add( object );  </span><br><span class="line">    camera.lookAt( object.position );</span><br><span class="line">	renderer.render( scene,camera );  </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>模型导入进去了，但是看起来还是很奇怪，这就要我们加一些其他光线渲染一下。在这里我们添加平行光线。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> directionalLight = <span class="keyword">new</span> THREE.DirectionalLight( <span class="number">0xffffff</span>, <span class="number">1.5</span> );</span><br><span class="line">directionalLight.position.set( <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span> )</span><br><span class="line">scene.add( directionalLight );</span><br></pre></td></tr></table></figure>
+<p>变得光泽多了。<br>从外部导入obj的完整代码：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#canvasdiv</span>&#123;</span></span><br><span class="line"><span class="undefined">	width: 1200px;</span></span><br><span class="line"><span class="undefined">	height: 800px;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">	</span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"js/three.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"js/MTLLoader.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"js/OBJMTLLoader.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"main-content"</span> <span class="attr">id</span>=<span class="string">"canvasdiv"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> &gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> container = <span class="built_in">document</span>.getElementById(<span class="string">'canvasdiv'</span>)</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> scene = <span class="keyword">new</span> THREE.Scene();</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> width = canvasdiv.clientWidth;</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> height = canvasdiv.clientHeight;</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> camera = <span class="keyword">new</span> THREE.PerspectiveCamera( <span class="number">90</span>, width/height, <span class="number">0.1</span>, <span class="number">1000</span> );</span></span><br><span class="line"><span class="undefined">camera.position.set( -10,10,10);</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> renderer = <span class="keyword">new</span> THREE.WebGLRenderer();</span></span><br><span class="line"><span class="undefined">renderer.setSize( width, height );</span></span><br><span class="line"><span class="undefined">canvasdiv.appendChild( renderer.domElement );</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> texture = <span class="keyword">new</span> THREE.Texture();</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> loader = <span class="keyword">new</span> THREE.ImageLoader(  );</span></span><br><span class="line"><span class="javascript">loader.load( <span class="string">'tank.jpg'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"> image </span>) </span>&#123;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">	texture.image = image;</span></span><br><span class="line"><span class="javascript">	texture.needsUpdate = <span class="literal">true</span>;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">&#125; );</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> loader = <span class="keyword">new</span> THREE.OBJMTLLoader();  </span></span><br><span class="line"><span class="javascript">loader.load(<span class="string">'tank.obj'</span>,<span class="string">'tank.mtl'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">object</span>)</span>&#123;</span></span><br><span class="line"><span class="undefined">	tank = object;</span></span><br><span class="line"><span class="javascript">	object.traverse(<span class="function"><span class="keyword">function</span>(<span class="params">child</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span> (child <span class="keyword">instanceof</span> THREE.Mesh)&#123;</span></span><br><span class="line"><span class="javascript">            <span class="comment">//将贴图赋于材质</span></span></span><br><span class="line"><span class="undefined">            child.material.map = texture;</span></span><br><span class="line"><span class="javascript">            <span class="comment">//重点，没有该句会导致PNG无法正确显示透明效果</span></span></span><br><span class="line"><span class="javascript">            child.material.transparent = <span class="literal">true</span>;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    &#125;);</span></span><br><span class="line"><span class="undefined">    object.position.set(0,0,0);</span></span><br><span class="line"><span class="undefined">    scene.add( object );  </span></span><br><span class="line"><span class="undefined">    camera.lookAt( object.position );</span></span><br><span class="line"><span class="undefined">	renderer.render( scene,camera );</span></span><br><span class="line"><span class="undefined">&#125;);  </span></span><br><span class="line"><span class="javascript">scene.add( <span class="keyword">new</span> THREE.AmbientLight( <span class="number">0xffffff</span> ) );</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> directionalLight = <span class="keyword">new</span> THREE.DirectionalLight( <span class="number">0xffffff</span>, <span class="number">1.5</span> );</span></span><br><span class="line"><span class="undefined">directionalLight.position.set( 1, 1, 1 )</span></span><br><span class="line"><span class="undefined">scene.add( directionalLight );</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">renderer.render(scene,camera);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="四、动画"><a href="#四、动画" class="headerlink" title="四、动画"></a>四、动画</h2><p>现在我们想办法让这些图形动起来。<br>在threejs中运用最多的动画是用requestAnimationFrame()方法。也可以利用传统的setInterval()做，但用这个会掉帧。<br>这里我们做一个render函数，来进行渲染和动画调用。这里以前面添加了myobj对象的代码为基础。</p>
+<h3 id="基本的动画"><a href="#基本的动画" class="headerlink" title="基本的动画"></a>基本的动画</h3><p>现在来不断地改变对象的角度方便对其进行观察。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#canvasdiv</span>&#123;</span></span><br><span class="line"><span class="undefined">	width: 600px;</span></span><br><span class="line"><span class="undefined">	height: 600px;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">	</span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"js/three.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"main-content"</span> <span class="attr">id</span>=<span class="string">"canvasdiv"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> &gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> container,camera,scene,renderer,myobj;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> init = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">	container = <span class="built_in">document</span>.getElementById(<span class="string">'canvasdiv'</span>)</span></span><br><span class="line"><span class="javascript">	scene = <span class="keyword">new</span> THREE.Scene();</span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> width = canvasdiv.clientWidth;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> height = canvasdiv.clientHeight;</span></span><br><span class="line"><span class="javascript">	camera = <span class="keyword">new</span> THREE.PerspectiveCamera( <span class="number">90</span>, width/height, <span class="number">0.1</span>, <span class="number">1000</span> );</span></span><br><span class="line"><span class="undefined">	camera.position.set( 0,0,10 )</span></span><br><span class="line"><span class="javascript">	renderer = <span class="keyword">new</span> THREE.WebGLRenderer();</span></span><br><span class="line"><span class="undefined">	renderer.setSize( width, height );</span></span><br><span class="line"><span class="undefined">	canvasdiv.appendChild( renderer.domElement );</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> geometry = <span class="keyword">new</span> THREE.BoxGeometry( <span class="number">2</span>,<span class="number">1</span>,<span class="number">1</span> );</span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> material = <span class="keyword">new</span> THREE.MeshBasicMaterial( &#123; <span class="attr">color</span>: <span class="number">0x645d50</span> &#125; );</span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> cube = <span class="keyword">new</span> THREE.Mesh( geometry, material );</span></span><br><span class="line"><span class="javascript">	<span class="comment">//scene.add( cube );</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> geometry = <span class="keyword">new</span> THREE.SphereGeometry( <span class="number">0.5</span>,<span class="number">100</span>,<span class="number">100</span> );</span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> material = <span class="keyword">new</span> THREE.MeshBasicMaterial( &#123; <span class="attr">color</span>: <span class="number">0xb9c16c</span> &#125; );</span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> ball = <span class="keyword">new</span> THREE.Mesh( geometry,material );</span></span><br><span class="line"><span class="undefined">	ball.position.set( 0,0,1 );</span></span><br><span class="line"><span class="javascript">	<span class="comment">//scene.add(ball);</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">	myobj = <span class="keyword">new</span> THREE.Object3D();</span></span><br><span class="line"><span class="undefined">	myobj.add( cube );</span></span><br><span class="line"><span class="undefined">	myobj.add( ball );</span></span><br><span class="line"><span class="undefined">	scene.add( myobj );</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> render = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="undefined">	requestAnimationFrame( render );</span></span><br><span class="line"><span class="undefined">	myobj.rotation.x+=0.01;</span></span><br><span class="line"><span class="undefined">	myobj.rotation.y+=0.01;</span></span><br><span class="line"><span class="undefined">	renderer.render(scene,camera);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined">init()</span></span><br><span class="line"><span class="undefined">render()</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="对动画进行控制"><a href="#对动画进行控制" class="headerlink" title="对动画进行控制"></a>对动画进行控制</h3><p>接着让我们对动画进行控制。<br>在我实现的项目中，是通过websocket连接后台传入参数来控制对象运动的，这里就介绍一下使用参数控制吧。<br>这里有一个问题，就是requestAnimationFrame回调的函数不能带有参数，否则会出现奇怪的bug。所以我选择用一个全局对象来进行控制。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> control=&#123;</span><br><span class="line">	s:<span class="number">0</span>,</span><br><span class="line">	p:<span class="number">0</span>,</span><br><span class="line">	q:<span class="number">0</span>,</span><br><span class="line">	j:<span class="number">0</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里s是运动的速度，p,q,j分别是myobj将要运动到的位置的x,y,z坐标。我们先写一个控制它在x轴上运动的函数：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> run = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> ( myobj.position.x&lt;control.p ) &#123;</span><br><span class="line">		myobj.position.x += control.s;</span><br><span class="line">		requestAnimationFrame( run );</span><br><span class="line">		renderer.render( scene,camera )</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="keyword">if</span> ( myobj.position.x&gt;control.p ) &#123;</span><br><span class="line">		myobj.position.x -= control.s;</span><br><span class="line">		requestAnimationFrame( run );</span><br><span class="line">		renderer.render( scene,camera )</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再在render函数中添加对run的调用requestAnimationFrame( run )。这样就可以在命令行中改变对象control的值实现控制myobj的运动。但是在运动停止后我的浏览器为什么会变得很卡，而且运动速度回有变化。我还不知道原因。不知道有没有朋友和我有同样的问题。于是我把函数拆成了两个，这样浏览器性能好些。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> run = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> ( myobj.position.x&lt;control.p ) &#123;</span><br><span class="line">		myobj.position.x += control.s;			</span><br><span class="line">		requestAnimationFrame( run );</span><br><span class="line">	&#125;;</span><br><span class="line">		renderer.render( scene,camera )</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> runx = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> ( myobj.position.x&gt;control.p ) &#123;</span><br><span class="line">	myobj.position.x -= control.s;			</span><br><span class="line">		requestAnimationFrame( runx );</span><br><span class="line">	&#125;;</span><br><span class="line">		renderer.render( scene,camera )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样的，也可以写出在y,z轴上运动的函数。<br>在x轴上运动的完整代码：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#canvasdiv</span>&#123;</span></span><br><span class="line"><span class="undefined">	width: 600px;</span></span><br><span class="line"><span class="undefined">	height: 600px;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">	</span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"js/three.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"main-content"</span> <span class="attr">id</span>=<span class="string">"canvasdiv"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> &gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> container,camera,scene,renderer,myobj;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> init = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">	container = <span class="built_in">document</span>.getElementById(<span class="string">'canvasdiv'</span>)</span></span><br><span class="line"><span class="javascript">	scene = <span class="keyword">new</span> THREE.Scene();</span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> width = canvasdiv.clientWidth;</span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> height = canvasdiv.clientHeight;</span></span><br><span class="line"><span class="javascript">	camera = <span class="keyword">new</span> THREE.PerspectiveCamera( <span class="number">90</span>, width/height, <span class="number">0.1</span>, <span class="number">1000</span> );</span></span><br><span class="line"><span class="undefined">	camera.position.set( 0,0,10 )</span></span><br><span class="line"><span class="javascript">	renderer = <span class="keyword">new</span> THREE.WebGLRenderer();</span></span><br><span class="line"><span class="undefined">	renderer.setSize( width, height );</span></span><br><span class="line"><span class="undefined">	canvasdiv.appendChild( renderer.domElement );</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> geometry = <span class="keyword">new</span> THREE.BoxGeometry( <span class="number">2</span>,<span class="number">1</span>,<span class="number">1</span> );</span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> material = <span class="keyword">new</span> THREE.MeshBasicMaterial( &#123; <span class="attr">color</span>: <span class="number">0x645d50</span> &#125; );</span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> cube = <span class="keyword">new</span> THREE.Mesh( geometry, material );</span></span><br><span class="line"><span class="javascript">	<span class="comment">//scene.add( cube );</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> geometry = <span class="keyword">new</span> THREE.SphereGeometry( <span class="number">0.5</span>,<span class="number">100</span>,<span class="number">100</span> );</span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> material = <span class="keyword">new</span> THREE.MeshBasicMaterial( &#123; <span class="attr">color</span>: <span class="number">0xb9c16c</span> &#125; );</span></span><br><span class="line"><span class="javascript">	<span class="keyword">var</span> ball = <span class="keyword">new</span> THREE.Mesh( geometry,material );</span></span><br><span class="line"><span class="undefined">	ball.position.set( 0,0,1 );</span></span><br><span class="line"><span class="javascript">	<span class="comment">//scene.add(ball);</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">	myobj = <span class="keyword">new</span> THREE.Object3D();</span></span><br><span class="line"><span class="undefined">	myobj.add( cube );</span></span><br><span class="line"><span class="undefined">	myobj.add( ball );</span></span><br><span class="line"><span class="undefined">	scene.add( myobj );</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> control=&#123;</span></span><br><span class="line"><span class="undefined">	s:0,</span></span><br><span class="line"><span class="undefined">	p:0,</span></span><br><span class="line"><span class="undefined">	q:0,</span></span><br><span class="line"><span class="undefined">	j:0,</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> run = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">	<span class="keyword">if</span> ( myobj.position.x&lt;control.p ) &#123;</span></span><br><span class="line"><span class="undefined">		myobj.position.x += control.s;			</span></span><br><span class="line"><span class="undefined">		requestAnimationFrame( run );</span></span><br><span class="line"><span class="undefined">	&#125;;</span></span><br><span class="line"><span class="undefined">		renderer.render( scene,camera )</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> runx = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">	<span class="keyword">if</span> ( myobj.position.x&gt;control.p ) &#123;</span></span><br><span class="line"><span class="undefined">	myobj.position.x -= control.s;			</span></span><br><span class="line"><span class="undefined">		requestAnimationFrame( runx );</span></span><br><span class="line"><span class="undefined">	&#125;;</span></span><br><span class="line"><span class="undefined">		renderer.render( scene,camera )</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> render = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="undefined">	requestAnimationFrame( run );</span></span><br><span class="line"><span class="undefined">	requestAnimationFrame( runx );</span></span><br><span class="line"><span class="undefined">	renderer.render(scene,camera);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">init()</span></span><br><span class="line"><span class="undefined">render()</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这个入门教程就到这里了，感谢阅读。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+            <a href="/tags/threejs/" rel="tag"># threejs</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/10/binary-tree-inJS/" rel="prev" title="JS中的二叉树遍历">
+                JS中的二叉树遍历 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="cxy">
+          <p class="site-author-name" itemprop="name">cxy</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、创建场景"><span class="nav-number">1.</span> <span class="nav-text">一、创建场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、绘制图形"><span class="nav-number">2.</span> <span class="nav-text">二、绘制图形</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、创建3d对象"><span class="nav-number">3.</span> <span class="nav-text">三、创建3d对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一个自己的对象"><span class="nav-number">3.1.</span> <span class="nav-text">创建一个自己的对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#外部导入-obj文件"><span class="nav-number">3.2.</span> <span class="nav-text">外部导入.obj文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、动画"><span class="nav-number">4.</span> <span class="nav-text">四、动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本的动画"><span class="nav-number">4.1.</span> <span class="nav-text">基本的动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对动画进行控制"><span class="nav-number">4.2.</span> <span class="nav-text">对动画进行控制</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cxy</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

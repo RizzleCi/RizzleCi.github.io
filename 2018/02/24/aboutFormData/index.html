@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="javascript,网络,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="我们都知道请求头中的Content-Type用于指示资源的MIME类型。multipart/form-data类型的Content-Type中必须包含一个boundary字段。">
+<meta name="keywords" content="javascript,网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FormData的传输">
+<meta property="og:url" content="http://rizzleci.github.io/2018/02/24/aboutFormData/index.html">
+<meta property="og:site_name" content="cxy的个人博客">
+<meta property="og:description" content="我们都知道请求头中的Content-Type用于指示资源的MIME类型。multipart/form-data类型的Content-Type中必须包含一个boundary字段。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-14T11:22:13.255Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="FormData的传输">
+<meta name="twitter:description" content="我们都知道请求头中的Content-Type用于指示资源的MIME类型。multipart/form-data类型的Content-Type中必须包含一个boundary字段。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://rizzleci.github.io/2018/02/24/aboutFormData/">
+
+
+
+
+
+  <title>FormData的传输 | cxy的个人博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">cxy的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://rizzleci.github.io/2018/02/24/aboutFormData/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="cxy的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">FormData的传输</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-24T19:46:46+08:00">
+                2018-02-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>我们都知道请求头中的Content-Type用于指示资源的MIME类型。multipart/form-data类型的Content-Type中必须包含一个boundary字段。</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Type: multipart/form-data; boundary=something</span><br></pre></td></tr></table></figure>
+<p><em>media-type</em><br>资源或数据的 MIME type 。<br><em>charset</em><br>字符编码标准。<br><em>boundary</em><br>对于多部分实体，boundary 是必需的，其包括来自一组字符的1到70个字符。</p>
+<h2 id="boundary"><a href="#boundary" class="headerlink" title="boundary"></a>boundary</h2><p>在请求body中，boundary起到分割参数的作用。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"/update"</span> <span class="attr">method</span>=<span class="string">"post"</span> <span class="attr">enctype</span>=<span class="string">"multipart/form-data"</span>&gt;</span>  </span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"a"</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"b"</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"submit"</span>&gt;</span>submit<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>请求头中Content-Type如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Type:multipart/form-data; boundary=----WebKitFormBoundaryn7ulZmAtRx5qtH8y</span><br></pre></td></tr></table></figure></p>
+<p>请求body如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">------WebKitFormBoundaryn7ulZmAtRx5qtH8y</span><br><span class="line">Content-Disposition: form-data; name=&quot;a&quot;</span><br><span class="line"></span><br><span class="line">a</span><br><span class="line">------WebKitFormBoundaryn7ulZmAtRx5qtH8y</span><br><span class="line">Content-Disposition: form-data; name=&quot;b&quot;</span><br><span class="line"></span><br><span class="line">b</span><br><span class="line">------WebKitFormBoundaryn7ulZmAtRx5qtH8y--</span><br></pre></td></tr></table></figure></p>
+<h2 id="规范"><a href="#规范" class="headerlink" title="规范"></a>规范</h2><p>FormData的规范在rfc1867中。</p>
+<p>关于boundary，规范中的描述是选择一个不在数据中出现的boundary。一般来说使用一段从概率上说“几乎不可能”的数据即可。</p>
+<p>表单中的每个字段按其原来的顺序以流的形式发送。规范规定了媒体内容遵循RFC 1521中的数据流规则。每一个字段都有一个唯一的name。form-data的body中有多个部分，每个部分都有 Content-Disposition作为开头，值为form-data和表单中的name。name中有非ASCII码字符的话，还应该按照RFC 1522里面所规定的方法进行编码。文件input会识别出原文件名，原文件名会被添加到Content-Disposition的filename参数中。</p>
+<h2 id="后端处理方法"><a href="#后端处理方法" class="headerlink" title="后端处理方法"></a>后端处理方法</h2><p>express文档中提到了用multer来处理form-data。它创建出一个中间件，其中使用busboy解析出文件对象并进行存储。</p>
+<p>busboy解析header中的content-type，将boundary分离出来，并使用它和其他一系列参数创建Dicer对象。<br>根据content-disposition解析出文件名、原文件名、mimetype等信息。</p>
+<p>Dicer分离出数据流中的header部分和文件/数据内容部分，触发header事件和part事件。</p>
+<p>StreamSearch使用Boyer-Moore-Horspool算法，用于在流数据中检索字符串，并根据此分割数据。</p>
+<p>相关代码如下：</p>
+<p><em>busboy</em><br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 各种类型数据的解析器，form-data所使用的是multipart</span></span><br><span class="line"><span class="keyword">var</span> TYPES = [</span><br><span class="line">  <span class="built_in">require</span>(<span class="string">'./types/multipart'</span>),</span><br><span class="line">  <span class="built_in">require</span>(<span class="string">'./types/urlencoded'</span>),</span><br><span class="line">];</span><br><span class="line"><span class="comment">// 提取出content-type的内容</span></span><br><span class="line"><span class="keyword">var</span> parsed = parseParams(headers[<span class="string">'content-type'</span>]),  <span class="comment">// 如["multipart/form-data", ["boundary", "----WebKitFormBoundary6KeKkA89uHEIkD6z"]]</span></span><br><span class="line">    matched, type;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; TYPES.length; ++i) &#123;</span><br><span class="line">  type = TYPES[i];</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> type.detect === <span class="string">'function'</span>)</span><br><span class="line">    matched = type.detect(parsed);</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    matched = type.detect.test(parsed[<span class="number">0</span>]);</span><br><span class="line">  <span class="keyword">if</span> (matched)</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (matched) &#123;</span><br><span class="line">  <span class="keyword">var</span> cfg = &#123; <span class="attr">parsedConType</span>: parsed, .... &#125;;</span><br><span class="line">  <span class="comment">// 生成解析器</span></span><br><span class="line">  <span class="keyword">this</span>._parser = type(<span class="keyword">this</span>, cfg);</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>parseParams将字符串转换为数组，它会将如”multipart/form-data; boundary=—-WebKitFormBoundarypkgBw5NX2PSvvBA0”的content-type值转换为<code>[&quot;multipart/form-data&quot;, [&quot;boundary&quot;, &quot;----WebKitFormBoundary6KeKkA89uHEIkD6z&quot;]]</code></p>
+<p>在’./types/multipart’中，可以看到如果是form-data的话detect为一个正则表达式，匹配Content-Type的一部分。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Multipart.detect = <span class="regexp">/^multipart\/form-data/i</span>;</span><br></pre></td></tr></table></figure></p>
+<p>当 matched 成功的时候，定义_parser为此时的type。</p>
+<p>使用Dicer库生成parser，刚刚拿到的boundary被存在parserCfg对象中。<br>Multipart触发自身的file或field事件，将文件、解析出的字符串传入回调函数。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.parser = <span class="keyword">new</span> Dicer(parserCfg);</span><br><span class="line"><span class="keyword">this</span>.parser.on(<span class="string">'part'</span>, <span class="function"><span class="keyword">function</span> <span class="title">onPart</span>(<span class="params">part</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  part.on(<span class="string">'header'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">header</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 解析文件名、类型等数据</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="keyword">if</span> (contype === <span class="string">'application/octet-stream'</span> || filename !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">      <span class="comment">// 文件</span></span><br><span class="line">      <span class="comment">// file是一个stream.Readable对象</span></span><br><span class="line">      boy.emit(<span class="string">'file'</span>, fieldname, file, filename, encoding, contype);</span><br><span class="line">      onData = <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;...&#125; <span class="comment">// 将数据push到file</span></span><br><span class="line">      onEnd = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;...&#125; <span class="comment">// 清理</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 普通参数</span></span><br><span class="line">      boy.emit(<span class="string">'field'</span>, fieldname, buffer, <span class="literal">false</span>, truncated, encoding, contype);</span><br><span class="line">      onData = <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;...&#125; <span class="comment">// 将二进制Buffer数据转为字符串</span></span><br><span class="line">      onEnd = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;...&#125; <span class="comment">// 清理</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  part.on(<span class="string">'data'</span>, onData);</span><br><span class="line">  part.on(<span class="string">'end'</span>, onEnd);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p><em>Dicer</em><br>Dicer是一个流式数据的分解器。<br>Dircer中利用boundary生成一个StreamSearch对象，并监听它的info事件。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>._bparser = <span class="keyword">new</span> StreamSearch(<span class="string">'\r\n--'</span> + boundary);</span><br><span class="line"><span class="keyword">this</span>._bparser.on(<span class="string">'info'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">isMatch, data, start, end</span>) </span>&#123;</span><br><span class="line">  self._oninfo(isMatch, data, start, end);</span><br><span class="line">&#125;);</span><br><span class="line">Dicer.prototype._oninfo = <span class="function"><span class="keyword">function</span>(<span class="params">isMatch, data, start, end</span>)</span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">if</span> (!<span class="keyword">this</span>._part) &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">this</span>._part = <span class="keyword">new</span> PartStream(<span class="keyword">this</span>._partOpts); <span class="comment">// 可读流</span></span><br><span class="line">    <span class="keyword">this</span>._part._read = <span class="function"><span class="keyword">function</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">      self._unpause();</span><br><span class="line">    &#125;;</span><br><span class="line">    ev = <span class="keyword">this</span>._isPreamble ? <span class="string">'preamble'</span> : <span class="string">'part'</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>._events[ev])</span><br><span class="line">      <span class="keyword">this</span>.emit(ev, <span class="keyword">this</span>._part); <span class="comment">// 触发part事件</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="keyword">this</span>._ignore();</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>._isPreamble)</span><br><span class="line">      <span class="keyword">this</span>._inHeader = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (data &amp;&amp; start &lt; end &amp;&amp; !<span class="keyword">this</span>._ignoreData) &#123;</span><br><span class="line">    <span class="comment">// push data</span></span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">    ...<span class="comment">// 清理</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">this</span>._hparser = <span class="keyword">new</span> HeaderParser(cfg);</span><br><span class="line"><span class="keyword">this</span>._hparser.on(<span class="string">'header'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">header</span>) </span>&#123;</span><br><span class="line">  self._inHeader = <span class="literal">false</span>;</span><br><span class="line">  self._part.emit(<span class="string">'header'</span>, header);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// HeaderParser 文件</span></span><br><span class="line"><span class="keyword">this</span>.ss = <span class="keyword">new</span> StreamSearch(B_DCRLF); <span class="comment">//B_DCRLF = new Buffer('\r\n\r\n')</span></span><br><span class="line"><span class="keyword">this</span>.ss.on(<span class="string">'info'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">isMatch, data, start, end</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (data &amp;&amp; !self.maxed) &#123;</span><br><span class="line">    ...</span><br><span class="line">    self.buffer += data.toString(<span class="string">'binary'</span>, start, end);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (isMatch)</span><br><span class="line">    self._finish();</span><br><span class="line">&#125;);</span><br><span class="line">HeaderParser.prototype._finish = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  ...<span class="comment">// 清理工作</span></span><br><span class="line">  <span class="keyword">var</span> header = <span class="keyword">this</span>.header;</span><br><span class="line">  <span class="keyword">this</span>.emit(<span class="string">'header'</span>, header);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p><em>StreamSearch</em><br>StreamSearch是二进制流的一个查询器，使用push方法输入需要查询的数据，并监听它的info事件，它会将匹配结果传入info事件的回调函数中。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+            <a href="/tags/网络/" rel="tag"># 网络</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/15/file2url/" rel="next" title="将文件转成URL的方式">
+                <i class="fa fa-chevron-left"></i> 将文件转成URL的方式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/25/1812textcenter/" rel="prev" title="尝试解决移动端文字垂直居中的方案">
+                尝试解决移动端文字垂直居中的方案 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="cxy">
+          <p class="site-author-name" itemprop="name">cxy</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#boundary"><span class="nav-number">1.</span> <span class="nav-text">boundary</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#规范"><span class="nav-number">2.</span> <span class="nav-text">规范</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后端处理方法"><span class="nav-number">3.</span> <span class="nav-text">后端处理方法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cxy</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
